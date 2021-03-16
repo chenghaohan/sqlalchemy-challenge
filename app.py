@@ -9,7 +9,7 @@ from sqlalchemy import create_engine, func
 from flask import Flask, jsonify
 
 #database setup
-engine = create_engine("sqlite:///hawaii.sqlite")
+engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 
 # reflect an existing database into a new model
 Base = automap_base()
@@ -37,8 +37,7 @@ def home():
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
         f"/api/v1.0/temp/start"
-        f"/api/v1.0/temp/start/end"
-    )
+        f"/api/v1.0/temp/start/end")
 
 #NO.1 Precipitation Route
 
@@ -92,6 +91,7 @@ def temp_obs():
 #NO.5 start/end temperature Route
 @app.route("/api/v1.0/temp/<start>")
 @app.route("/api/v1.0/temp/<start>/<end>")
+#start format yyyy-mm-dd; <start>/<end> formats when query in broswer yyyy-mm-dd/yyyy-mm-dd
 
 def star_end(start = None, end = None):
 
@@ -105,7 +105,7 @@ def star_end(start = None, end = None):
         results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).all()
         temps = list(np.ravel(results))
         return jsonify(temps=temps)
-        
+
     #incase of both start and end date are provided
     results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).all()
     temps = list(np.ravel(results))
